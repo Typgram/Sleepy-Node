@@ -31,7 +31,7 @@ router.get("/", authMiddleware, (req, res) => {
       logger.info("GET /set 400 Bad Request - Missing status parameter");
       const errorResponse = APIUnsuccessful(
         400,
-        "Missing required parameter 'status'"
+        "Missing required parameter 'status'",
       );
       return res.status(errorResponse.code).json(errorResponse);
     }
@@ -42,7 +42,7 @@ router.get("/", authMiddleware, (req, res) => {
       logger.info("GET /set 400 Bad Request - Invalid status parameter");
       const errorResponse = APIUnsuccessful(
         400,
-        "Argument 'status' must be a number"
+        "Argument 'status' must be a number",
       );
       return res.status(errorResponse.code).json(errorResponse);
     }

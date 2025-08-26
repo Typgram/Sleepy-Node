@@ -53,7 +53,7 @@ exports.authMiddleware = (req, res, next) => {
     logger.error("SLEEPY_SECRET not found in .env file!");
     const errorResponse = APIUnsuccessful(
       500,
-      "Authentication secret is not configured"
+      "Authentication secret is not configured",
     );
     return res.status(errorResponse.code).json(errorResponse);
   }
@@ -65,24 +65,24 @@ exports.authMiddleware = (req, res, next) => {
   if (!secret) {
     // 未提供secret的情况
     logger.error(
-      `No secret provided by client for endpoint: ${req.method} ${req.originalUrl}`
+      `No secret provided by client for endpoint: ${req.method} ${req.originalUrl}`,
     );
 
     const errorResponse = APIUnsuccessful(
       401,
-      "No secret provided, please provide a valid secret for authentication"
+      "No secret provided, please provide a valid secret for authentication",
     );
     return res.status(errorResponse.code).json(errorResponse);
   } else if (secret !== SECRET) {
     // 提供了secret但不正确的情况
     logger.error(
-      `Incorrect secret provided for endpoint: ${req.method} ${req.originalUrl}`
+      `Incorrect secret provided for endpoint: ${req.method} ${req.originalUrl}`,
     );
     //logger.info(`Provided secret: ${secret}`);
     //logger.info(`Expected secret: ${SECRET}`);
     const errorResponse = APIUnsuccessful(
       401,
-      "Provided secret is incorrect, please check and try again"
+      "Provided secret is incorrect, please check and try again",
     );
     return res.status(errorResponse.code).json(errorResponse);
   }

@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  sleepy-backend:
+    # 使用当前目录的Dockerfile构建镜像
+    build: .
+    # 容器名称
+    container_name: sleepy-backend
+    # 重启策略
+    restart: unless-stopped
+    # 端口映射：主机端口:容器端口
+    ports:
+      - "3000:3000"
+    # 环境变量配置
+    environment:
+      # 基础环境配置
+      - NODE_ENV=production
+    volumes:
+      # 将项目的_data目录挂载到容器中，保持数据持久化
+      - ./_data:/app/_data
+      - ./.env:/app/.env

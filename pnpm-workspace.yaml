@@ -2,4 +2,5 @@ ignoredBuiltDependencies:
   - better-sqlite3
 
 onlyBuiltDependencies:
+  - "@scarf/scarf"
   - sqlite3

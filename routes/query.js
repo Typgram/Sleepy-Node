@@ -95,7 +95,7 @@ router.get("/status", (req, res) => {
     res.status(200).json(dataJson);
   } catch (error) {
     logger.info(
-      `GET /api/query/status 500 Internal Server Error: ${error.message}`
+      `GET /api/query/status 500 Internal Server Error: ${error.message}`,
     );
     // 错误处理
     const errorResponse = APIUnsuccessful(500, error.message);
