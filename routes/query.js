@@ -95,7 +95,38 @@ router.get("/status", (req, res) => {
     res.status(200).json(dataJson);
   } catch (error) {
     logger.info(
-      `GET /api/query/status 500 Internal Server Error: ${error.message}`,
+      `GET /api/query/status 500 Internal Server Error: ${error.message}`
+    );
+    // 错误处理
+    const errorResponse = APIUnsuccessful(500, error.message);
+    res.status(errorResponse.code).json(errorResponse);
+  }
+});
+
+/**
+ * 可用状态列表接口
+ * 路径: /api/query/status/list
+ * 方法: GET
+ * 描述: 获取所有可用的状态列表
+ * 返回: JSON格式的状态列表
+ */
+router.get("/status/list", (req, res) => {
+  try {
+    logger.info("GET /api/query/status/list 200");
+
+    // 读取 status.json 文件
+    const statusJsonPath = path.join(__dirname, "..", "_data", "status.json");
+    const statusJsonContent = fs.readFileSync(statusJsonPath, "utf8");
+    const statusList = JSON.parse(statusJsonContent);
+
+    // 返回200状态码和状态列表
+    res.status(200).json({
+      success: true,
+      statusList: statusList,
+    });
+  } catch (error) {
+    logger.info(
+      `GET /api/query/status/list 500 Internal Server Error: ${error.message}`
     );
     // 错误处理
     const errorResponse = APIUnsuccessful(500, error.message);
