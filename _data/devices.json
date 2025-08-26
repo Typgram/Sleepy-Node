@@ -1,0 +1,25 @@
+[{
+    "id": "8ad99087-1b66-4edf-bcf6-81b11ad5dc6b",
+    "show_name": "iPhone",
+    "using": "true",
+    "app_name": "VS"
+  },
+  {
+    "id": "b939bc2f-cb50-4e36-8eac-9ade02559714",
+    "show_name": "ROG Strix",
+    "using": false,
+    "app_name": "VSCode"
+  },
+  {
+    "id": "c2d8e3a4-f6b5-4c9d-a2b1-f8e7d6c5b4a3",
+    "show_name": "MacBook Pro",
+    "using": true,
+    "app_name": "Chrome"
+  },
+  {
+    "id": "d1e2f3a4-b5c6-d7e8-f9a0-b1c2d3e4f5a6",
+    "show_name": "iPad Pro",
+    "using": false,
+    "app_name": "Notability"
+  }
+]

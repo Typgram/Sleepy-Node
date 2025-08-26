@@ -1,0 +1,726 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Sleepy Backend API",
+    "description": "SleepyNode - 一个轻量级的后端服务",
+    "version": "1.0.0",
+    "contact": {
+      "name": "ImJingLan",
+      "email": "example@example.com",
+      "url": "https://example.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [{
+    "url": "http://localhost:{port}",
+    "description": "本地开发服务器",
+    "variables": {
+      "port": {
+        "default": "3000",
+        "description": "服务器端口号"
+      }
+    }
+  }],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "服务器健康检查",
+        "description": "检查服务器是否正常运行",
+        "responses": {
+          "200": {
+            "description": "服务器正常运行",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Sleepy Backend Server is running"
+                    },
+                    "version": {
+                      "type": "string",
+                      "example": "1.0.0"
+                    }
+                  },
+                  "required": ["message", "version"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/query": {
+      "get": {
+        "summary": "获取站点元数据",
+        "description": "获取站点的元数据（页面设置、版本等）",
+        "responses": {
+          "200": {
+            "description": "成功获取元数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "version": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "example": [1, 0, 0]
+                    },
+                    "version_str": {
+                      "type": "string",
+                      "example": "1.0.0"
+                    },
+                    "timezone": {
+                      "type": "string",
+                      "example": "Asia/Shanghai"
+                    },
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "background": {
+                          "type": "string",
+                          "example": "https://imgapi.siiway.top/image"
+                        },
+                        "desc": {
+                          "type": "string"
+                        },
+                        "favicon": {
+                          "type": "string",
+                          "example": "/static/favicon.ico"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "theme": {
+                          "type": "string",
+                          "example": "default"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "metrics": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  },
+                  "required": ["success", "version", "version_str", "timezone", "page", "metrics"]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "获取站点元数据（POST方法）",
+        "description": "使用POST方法获取站点的元数据（页面设置、版本等）",
+        "responses": {
+          "200": {
+            "description": "成功获取元数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/paths/~1api~1query/get/responses/200/content/application~1json/schema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/query/status": {
+      "get": {
+        "summary": "获取服务器状态",
+        "description": "获取服务器的运行状态信息以及data.json和devices.json中的数据",
+        "responses": {
+          "200": {
+            "description": "成功获取服务器状态",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "device_status": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Device"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/set": {
+      "get": {
+        "summary": "设置当前状态",
+        "description": "设置当前状态，并更新最后更新时间",
+        "security": [{
+          "ApiKeyAuth": []
+        }],
+        "parameters": [{
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "要设置的状态值"
+          },
+          {
+            "name": "secret",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "认证密钥"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "状态设置成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Status updated successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "lastUpdate": {
+                          "type": "string",
+                          "example": "2023-10-25T12:34:56Z"
+                        }
+                      }
+                    }
+                  },
+                  "required": ["success", "message", "data"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/device/set": {
+      "get": {
+        "summary": "设置设备状态",
+        "description": "设置设备的状态信息",
+        "security": [{
+          "ApiKeyAuth": []
+        }],
+        "parameters": [{
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "设备唯一标识符"
+          },
+          {
+            "name": "show_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "设备显示名称"
+          },
+          {
+            "name": "using",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"]
+            },
+            "description": "设备使用状态"
+          },
+          {
+            "name": "app_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "应用名称"
+          },
+          {
+            "name": "secret",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "认证密钥"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "设备状态更新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Device status updated successfully"
+                    },
+                    "device": {
+                      "$ref": "#/components/schemas/Device"
+                    }
+                  },
+                  "required": ["success", "message", "device"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "设备未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/device/add": {
+      "get": {
+        "summary": "添加新设备",
+        "description": "添加新设备并返回唯一的设备ID",
+        "security": [{
+          "ApiKeyAuth": []
+        }],
+        "parameters": [{
+            "name": "show_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "设备显示名称"
+          },
+          {
+            "name": "using",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"]
+            },
+            "description": "设备使用状态"
+          },
+          {
+            "name": "app_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "应用名称"
+          },
+          {
+            "name": "secret",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "认证密钥"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "设备添加成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Device added successfully"
+                    },
+                    "device": {
+                      "$ref": "#/components/schemas/Device"
+                    },
+                    "device_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "123e4567-e89b-12d3-a456-426614174000"
+                    }
+                  },
+                  "required": ["success", "message", "device", "device_id"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/device/remove": {
+      "get": {
+        "summary": "删除设备",
+        "description": "根据设备ID删除设备",
+        "security": [{
+          "ApiKeyAuth": []
+        }],
+        "parameters": [{
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "设备唯一标识符"
+          },
+          {
+            "name": "secret",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "认证密钥"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "设备删除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Device removed successfully"
+                    },
+                    "device": {
+                      "$ref": "#/components/schemas/Device"
+                    }
+                  },
+                  "required": ["success", "message", "device"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权访问",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "设备未找到",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Device": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "show_name": {
+            "type": "string",
+            "example": "示例设备"
+          },
+          "using": {
+            "oneOf": [{
+                "type": "boolean"
+              },
+              {
+                "type": "string",
+                "enum": ["true", "false"]
+              }
+            ],
+            "example": true
+          },
+          "app_name": {
+            "type": "string",
+            "example": "SleepyApp"
+          }
+        },
+        "required": ["id", "show_name", "using", "app_name"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "code": {
+            "type": "string",
+            "example": "bad request"
+          },
+          "message": {
+            "type": "string",
+            "example": "Missing required parameter"
+          },
+          "description": {
+            "type": "string",
+            "example": "Detailed error description"
+          }
+        },
+        "required": ["success", "code", "message"]
+      },
+      "UnauthorizedResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "integer",
+                "example": 401
+              },
+              "message": {
+                "type": "string",
+                "example": "Unauthorized"
+              },
+              "description": {
+                "type": "string",
+                "example": "No secret provided, please provide a valid secret for authentication"
+              }
+            },
+            "required": ["code", "message"]
+          }
+        },
+        "required": ["success", "error"]
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "secret",
+        "description": "通过查询参数传递的认证密钥"
+      },
+      "ApiKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Sleepy-Secret",
+        "description": "通过请求头传递的认证密钥"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "通过Authorization请求头传递的Bearer令牌"
+      }
+    }
+  },
+  "security": [{
+    "ApiKeyAuth": [],
+    "ApiKeyHeader": [],
+    "BearerAuth": []
+  }]
+}
