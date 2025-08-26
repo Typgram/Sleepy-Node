@@ -7,7 +7,7 @@
  * 应用程序版本号
  * @type {Array<number>}
  */
-const VERSION = [1, 0, 0];
+const VERSION = [0, 1, 1];
 
 /**
  * 应用程序元信息配置
