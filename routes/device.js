@@ -9,7 +9,7 @@ const logger = require("../utils/logger");
 const { authMiddleware } = require("../utils/auth");
 const fs = require("fs");
 const path = require("path");
-const { APIUnsuccessful } = require("../utils/apiResponse");
+const { APIUnsuccessful } = require("../utils/APIUnsuccessful");
 
 const { generateUUID } = require("../utils/uuidKits");
 
@@ -27,7 +27,6 @@ const DEVICES_FILE_PATH = path.join(__dirname, "..", "_data", "devices.json");
  * 返回: JSON格式的操作结果
  */
 router.get("/set", authMiddleware, (req, res) => {
-  console.log(req.query);
   try {
     // 检查设备ID参数是否存在
     if (!req.query.id) {

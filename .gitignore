@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-test-*.js
+test/
 
 # Dependencies
 node_modules

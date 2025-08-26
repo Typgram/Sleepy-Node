@@ -2,7 +2,7 @@
  * Sleepy Backend Server
  * 主入口文件，创建Express服务器并配置API路由
  */
-const { APP_META, getVersion } = require("./utils/metaInfo");
+const { APP_META } = require("./utils/metaInfo");
 const VERSION = APP_META.version;
 const VRESION_STR = APP_META.versionString;
 // 检查.env文件是否存在
@@ -10,6 +10,12 @@ const fs = require("fs");
 const path = require("path");
 const logger = require("./utils/logger");
 const envFilePath = path.resolve(__dirname, ".env");
+
+const { APIUnsuccessful, codes } = require("./utils/APIUnsuccessful");
+
+function isDevelopment() {
+  return process.env.NODE_ENV === "development";
+}
 
 if (!fs.existsSync(envFilePath)) {
   logger.error("Error: .env file not found");
@@ -25,7 +31,6 @@ require("dotenv").config();
 // 导入所需模块
 const express = require("express");
 const app = express();
-const { authMiddleware } = require("./utils/auth");
 
 // 设置服务器端口，从环境变量或默认值获取
 const PORT = process.env.PORT || 3000;
@@ -48,8 +53,14 @@ app.get("/", (req, res) => {
   logger.info("GET / 200");
   res.json({
     message: "Sleepy Backend Server is running",
-    version: getVersion(),
+    version: VRESION_STR,
   });
+});
+
+app.get("/errors", (req, res) => {
+  logger.info(`GET /errors ${req.query.code}`);
+  const errorResponse = APIUnsuccessful(req.query.code, codes[req.query.code]);
+  return res.status(errorResponse.code).json(errorResponse);
 });
 
 // 挂载API路由
@@ -60,12 +71,8 @@ app.use("/api/device", deviceRoutes);
 // 启动服务器
 app.listen(PORT, () => {
   logger.log("info", `Server is running on http://localhost:${PORT}`);
-  logger.log("info", `API Routes available:`);
-  logger.log("info", `  - http://localhost:${PORT}/api/`);
-  logger.log("info", `  - http://localhost:${PORT}/api/query`);
-  logger.log("info", `  - http://localhost:${PORT}/api/query/status`);
-  logger.log("info", `  - http://localhost:${PORT}/api/set (需要认证)`);
-  logger.log("info", `  - http://localhost:${PORT}/api/device/set (需要认证)`);
   logger.info(`VERSION: ${VRESION_STR}`);
-  logger.log("info", `Your Sleepy Secret: ${SECRET}`);
+  if (isDevelopment()) {
+    logger.info(`Your SECRET: ${SECRET}`);
+  }
 });

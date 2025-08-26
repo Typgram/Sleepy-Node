@@ -64,3 +64,5 @@ exports.APIUnsuccessful = (code, message) => {
     message: message,
   };
 };
+
+exports.codes = codes;

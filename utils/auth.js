@@ -5,11 +5,7 @@
  */
 
 const logger = require("./logger");
-const {
-  APIUnsuccessful,
-  Unauthorized,
-  InternalServerError,
-} = require("./apiResponse");
+const { APIUnsuccessful } = require("./APIUnsuccessful");
 
 /**
  * 从环境变量或请求中获取secret
@@ -82,8 +78,8 @@ exports.authMiddleware = (req, res, next) => {
     logger.error(
       `Incorrect secret provided for endpoint: ${req.method} ${req.originalUrl}`
     );
-    logger.info(`Provided secret: ${secret}`);
-    logger.info(`Expected secret: ${SECRET}`);
+    //logger.info(`Provided secret: ${secret}`);
+    //logger.info(`Expected secret: ${SECRET}`);
     const errorResponse = APIUnsuccessful(
       401,
       "Provided secret is incorrect, please check and try again"

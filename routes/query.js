@@ -11,7 +11,7 @@ const path = require("path");
 const {
   APIUnsuccessful,
   InternalServerError,
-} = require("../utils/apiResponse");
+} = require("../utils/APIUnsuccessful");
 
 const { APP_META } = require("../utils/metaInfo");
 const VERSION = APP_META.version;
