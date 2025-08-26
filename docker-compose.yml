@@ -18,4 +18,5 @@ services:
     volumes:
       # 将项目的_data目录挂载到容器中，保持数据持久化
       - ./_data:/app/_data
+      - ./logs:/app/logs
       - ./.env:/app/.env
