@@ -19,14 +19,5 @@ COPY . .
 # 暴露项目运行的端口（根据实际情况修改）
 EXPOSE 3000
 
-# 设置环境变量
-ENV NODE_ENV=production
-ENV PORT=8080
-ENV SLEEPY_SECRET=LZUJ9DpQSyqm6N5y
-ENV METRICS_ENABLED=true
-ENV SITE_NAME=Sleepy
-ENV SITE_DESC=Sleepy是一个基于Node.js的简单易用的API接口文档工具
-
-
 # 启动命令
 CMD ["pnpm", "start"]

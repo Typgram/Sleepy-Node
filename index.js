@@ -64,9 +64,9 @@ app.get("/errors", (req, res) => {
 });
 
 // 挂载API路由
-app.use("/api/query", queryRoutes);
-app.use("/api/set", setRoutes);
-app.use("/api/device", deviceRoutes);
+app.use("/query", queryRoutes);
+app.use("/set", setRoutes);
+app.use("/device", deviceRoutes);
 
 // 启动服务器
 app.listen(PORT, () => {
